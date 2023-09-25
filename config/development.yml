@@ -1,0 +1,9 @@
+db:
+  host: 'lupo-dev.cmrli3m343t5.ap-northeast-2.rds.amazonaws.com'
+  username: 'postgres'
+  password: 'lupo1234'
+  synchronize: true
+  type: 'postgres'
+
+jwt:
+  secret: 'jiwon0818'
