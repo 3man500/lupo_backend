@@ -15,17 +15,17 @@ export class userCreateDto{
     password: string
 
     @IsString()
-    realname: string
+    realname?: string
 
     @IsString()
-    nickname: string
+    nickname?: string
 
     @IsString()
-    gender: string
+    gender?: string
 
     @IsNumber()
-    age: number
+    age?: number
 
     @IsString() // @Todo isPhoneNumber region parameter 값 찾아서 바꾸자
-    phone: string
+    phone?: string
 }
