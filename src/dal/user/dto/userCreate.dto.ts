@@ -14,18 +14,14 @@ export class userCreateDto{
     })
     password: string
 
-    @IsString()
     realname?: string
 
-    @IsString()
     nickname?: string
 
-    @IsString()
     gender?: string
 
-    @IsNumber()
     age?: number
 
-    @IsString() // @Todo isPhoneNumber region parameter 값 찾아서 바꾸자
+    // @Todo isPhoneNumber region parameter 값 찾아서 바꾸자
     phone?: string
 }
