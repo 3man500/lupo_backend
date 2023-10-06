@@ -1,10 +1,11 @@
 import { User } from './user.entity';
 import { AuthService } from './auth.service';
-import { Body, Controller, Get, Post, Req, Res, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Req, Res, UseGuards, ValidationPipe } from '@nestjs/common';
 import { userCreateDto } from './dto/userCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './getUser.decorator';
 import { Request, Response } from 'express';
+import { UpdateLocationDto } from './dto/updateLocationDto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,6 +29,11 @@ export class AuthController {
             message: 'success',
             access_token: jwt.accessToken
         })
+    }
+
+    @Patch('/location')
+    async updateLocation(@Body() updateLocationDto: UpdateLocationDto){
+        return this.authService.updateLocation(updateLocationDto.lat, updateLocationDto.lon, updateLocationDto.userId)
     }
 
     @Post('/logout')

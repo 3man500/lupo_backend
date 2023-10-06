@@ -5,7 +5,8 @@ import { UserRepository } from './user.repository';
 import * as bycrypt from "bcryptjs"
 import { JwtService } from '@nestjs/jwt';
 import * as cookieParser from 'cookie-parser';
-import { Any } from 'typeorm';
+import { Any, Long } from 'typeorm';
+import { User } from './user.entity';
 
 @Injectable()
 export class AuthService {
@@ -32,6 +33,17 @@ export class AuthService {
             } else{
                 throw new UnauthorizedException('login failed.')
             }
+        }
+
+        async updateLocation(lat: Long, lon: Long, userId: number): Promise<User>{
+            const user = await this.userRepository.findOne(userId)
+
+            user.lat = lat.toString()
+            user.lon = lon.toString()
+
+            await this.userRepository.save(user)
+
+            return user
         }
 
         async authCheck(req, res){
