@@ -5,7 +5,7 @@ import { UserRepository } from './user.repository';
 import * as bycrypt from "bcryptjs"
 import { JwtService } from '@nestjs/jwt';
 import * as cookieParser from 'cookie-parser';
-import { Any, Long } from 'typeorm';
+import { Any, Double, Long } from 'typeorm';
 import { User } from './user.entity';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class AuthService {
             }
         }
 
-        async updateLocation(lat: Long, lon: Long, userId: number): Promise<User>{
+        async updateLocation(lat: Double, lon: Double, userId: number): Promise<User>{
             const user = await this.userRepository.findOne(userId)
 
             user.lat = lat.toString()
