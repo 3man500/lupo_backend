@@ -1,15 +1,19 @@
 import { User } from './user.entity';
 import { AuthService } from './auth.service';
-import { Body, Controller, Get, Patch, Post, Req, Res, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Req, Res, UseGuards, ValidationPipe } from '@nestjs/common';
 import { userCreateDto } from './dto/userCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './getUser.decorator';
 import { Request, Response } from 'express';
 import { UpdateLocationDto } from './dto/updateLocationDto';
+import { LocationService } from './location/location.service';
+import { LIMITED_DISTANCE } from 'src/utils/constants';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService){}
+    constructor(
+        private readonly authService: AuthService,
+        private readonly locationService: LocationService){}
 
     @Post('/signup')
     signUp(@Body(ValidationPipe) userCreateDto: userCreateDto): Promise<{}>{
@@ -34,6 +38,19 @@ export class AuthController {
     @Patch('/location')
     async updateLocation(@Body() updateLocationDto: UpdateLocationDto){
         return this.authService.updateLocation(updateLocationDto.lat, updateLocationDto.lon, updateLocationDto.userId)
+    }
+
+    @Get('/location/adjacency')
+    async checkDistanceAdjacency(
+        @Query('userId1') userId1: number, @Query('userId2') userId2: number
+    ){
+        const dist = await this.locationService.getDistanceByUserId(userId1, userId2)
+
+        if(dist < LIMITED_DISTANCE){
+            return true
+        }else{
+            return false
+        }
     }
 
     @Post('/logout')
@@ -61,6 +78,7 @@ export class AuthController {
 
     @Get('hello')
     hello(){
-        return 'hello'
+        return this.locationService.getDistanceByUserId(14,15)
+        //return 'hello'
     }
 }

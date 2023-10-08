@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, Long, OneToMany, PrimaryColumnCannotBeNullableError, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { BaseEntity, Column, Entity, Long, OneToMany, PrimaryColumnCannotBeNullableError, PrimaryGeneratedColumn, Unique, Double } from 'typeorm';
 
 
 
@@ -29,9 +29,9 @@ export class User extends BaseEntity{
     @Column({nullable: true})
     phone: string
 
-    @Column({nullable: true, type: 'float'})
-    lat: string
+    @Column({nullable: true, type: 'float8'})
+    lat: Double
 
-    @Column({nullable: true, type: 'float'})
-    lon: string
+    @Column({nullable: true, type: 'float8'})
+    lon: Double
 }

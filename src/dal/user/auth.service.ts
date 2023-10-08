@@ -38,8 +38,8 @@ export class AuthService {
         async updateLocation(lat: Double, lon: Double, userId: number): Promise<User>{
             const user = await this.userRepository.findOne(userId)
 
-            user.lat = lat.toString()
-            user.lon = lon.toString()
+            user.lat = lat
+            user.lon = lon
 
             await this.userRepository.save(user)
 
