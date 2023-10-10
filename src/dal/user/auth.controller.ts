@@ -36,8 +36,11 @@ export class AuthController {
     }
 
     @Patch('/location')
-    async updateLocation(@Body() updateLocationDto: UpdateLocationDto){
-        return this.authService.updateLocation(updateLocationDto.lat, updateLocationDto.lon, updateLocationDto.userId)
+    async updateLocation(@Req() req: Request, @Body() updateLocationDto: UpdateLocationDto){
+        console.log("cookie", req.cookies.access_token)
+        const authUser = await this.authService.decodeJwt(req)
+        console.log(authUser, authUser.userId)
+        return this.authService.updateLocation(updateLocationDto.lat, updateLocationDto.lon, authUser.userId)
     }
 
     @Get('/location/adjacency')

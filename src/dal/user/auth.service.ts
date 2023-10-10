@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { userCreateDto } from './dto/userCreate.dto';
 import { UserRepository } from './user.repository';
@@ -7,6 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as cookieParser from 'cookie-parser';
 import { Any, Double, Long } from 'typeorm';
 import { User } from './user.entity';
+import { JwtForm } from 'src/common/type/JwtForm';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -68,6 +70,28 @@ export class AuthService {
                         })
             }else{
                 res.json({ isLogined : false})
+            }
+        }
+
+        async decodeJwt(req): Promise<JwtForm>{
+            const token = req.cookies.access_token
+            if(token === undefined){
+                throw new NotFoundException('not found access_token')
+            }
+            console.log(token)
+            const decodedToken = this.jwtService.decode(token)
+            console.log(decodedToken)
+            console.log(decodedToken['userId'])
+            const id = decodedToken['userId']
+            const username = decodedToken['username']
+            console.log(id, username)
+            
+            const user = await this.userRepository.findOne({id})
+            const jwtForm = new JwtForm(user.id, user.username)
+            if(user.username === username){
+                return jwtForm
+            }else{
+               throw new BadRequestException('token is not available.')
             }
         }
 }
