@@ -39,7 +39,7 @@ export class AuthController {
     async updateLocation(@Req() req: Request, @Body() updateLocationDto: UpdateLocationDto){
         console.log("cookie", req.cookies.access_token)
         const authUser = await this.authService.decodeJwt(req)
-        console.log(authUser, authUser.userId)
+        console.log(authUser, authUser.userId, updateLocationDto.lat, updateLocationDto.lon)
         return this.authService.updateLocation(updateLocationDto.lat, updateLocationDto.lon, authUser.userId)
     }
 
@@ -49,7 +49,7 @@ export class AuthController {
     ){
         const dist = await this.locationService.getDistanceByUserId(userId1, userId2)
 
-        if(dist < LIMITED_DISTANCE){
+        if(dist !== null && dist < LIMITED_DISTANCE){
             return true
         }else{
             return false
