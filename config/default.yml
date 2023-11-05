@@ -2,7 +2,7 @@ server:
   port: 3000
 
 db:
-  host: 'lupo-dev.cmrli3m343t5.ap-northeast-2.rds.amazonaws.com'
+  host: 'lupodev.cbhfq6rfyu8g.ap-northeast-2.rds.amazonaws.com'
   username: 'postgres'
   password: 'lupo1234'
   synchronize: true
