@@ -1,6 +1,6 @@
 import { User } from './user.entity';
 import { AuthService } from './auth.service';
-import { Body, Controller, Get, Patch, Post, Query, Req, Res, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { userCreateDto } from './dto/userCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './getUser.decorator';
@@ -8,12 +8,16 @@ import { Request, Response } from 'express';
 import { UpdateLocationDto } from './dto/updateLocationDto';
 import { LocationService } from './location/location.service';
 import { LIMITED_DISTANCE } from 'src/utils/constants';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AwsService } from 'src/common/aws.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
-        private readonly locationService: LocationService){}
+        private readonly locationService: LocationService,
+        private readonly awsService: AwsService){}
 
     @Post('/signup')
     signUp(@Body(ValidationPipe) userCreateDto: userCreateDto): Promise<{}>{
@@ -82,6 +86,17 @@ export class AuthController {
     me(@Req() req: Request, @Res() res: Response){
         console.log("cookie", req.cookies.access_token)
         return this.authService.authCheck(req,res)
+    }
+
+    @UseInterceptors(FileInterceptor('image'))
+    // @UseGuards(AuthGuard())
+    // @ApiBearerAuth('access-token')
+    @Post('/profile/image/upload')
+    async uploadUserImg(
+    @UploadedFile('file') file: Express.Multer.File,
+    ) {
+        console.log(file)
+        return await this.awsService.uploadFileToS3('posts', file);
     }
 
     @Post('/test')
