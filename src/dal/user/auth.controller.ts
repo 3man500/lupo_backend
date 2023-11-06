@@ -56,6 +56,17 @@ export class AuthController {
         }
     }
 
+    @Get('/users/adjacency')
+    async getAdjacencyUsers(
+        @Req() req: Request
+    ){
+        console.log("cookie", req.cookies.access_token)
+        const authUser = await this.authService.decodeJwt(req)
+
+        return this.authService.getUsersAdjacency(authUser.userId)
+
+    }
+
     @Post('/logout')
     logout(@Res() res: Response): any{
         res.cookie('access_token', 'none', {
@@ -81,7 +92,7 @@ export class AuthController {
 
     @Get('hello')
     hello(){
-        return this.locationService.getDistanceByUserId(14,15)
+        return this.authService.getUsersAdjacency(1)
         //return 'hello'
     }
 }

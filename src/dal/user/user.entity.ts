@@ -15,7 +15,7 @@ export class User extends BaseEntity{
     age: number
 
     @Column({nullable: true})
-    gender: String
+    gender: string
 
     @Column({nullable: true})
     realname: string

@@ -5,18 +5,45 @@ import { UserRepository } from './user.repository';
 import * as bycrypt from "bcryptjs"
 import { JwtService } from '@nestjs/jwt';
 import * as cookieParser from 'cookie-parser';
-import { Any, Double, Long } from 'typeorm';
+import { Any, Double, IsNull, Long, Not } from 'typeorm';
 import { User } from './user.entity';
 import { JwtForm } from 'src/common/type/JwtForm';
 import { NotFoundError } from 'rxjs';
+import { LocationService } from './location/location.service';
+import { LIMITED_DISTANCE } from '../../utils/constants';
+import { UserDto } from './dto/userDto';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(UserRepository) 
         private readonly userRepository: UserRepository,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly locationService: LocationService
         ){}
+
+        async getUsersAdjacency(userId: number){
+            const users = await this.userRepository.find(
+                {
+                    where: [{"lat" : Not(IsNull()), "lon" : Not(IsNull()), "id": Not(userId)}]
+                })
+
+            //console.log(users)
+            let adjacencyUsers = []
+            await Promise.all(users.map(async (user: User) => {
+                const dist = await this.locationService.getDistanceByUserId(userId, user.id)
+                if(dist !== null && dist < LIMITED_DISTANCE){
+                    const res = UserDto.of(user)
+                    console.log(user.id, 1)
+                    adjacencyUsers.push(res)
+                }
+                 
+            }))
+
+            console.log(adjacencyUsers)
+
+            
+        }
 
         async signUp(userCreateDto: userCreateDto): Promise<{}>{
             return this.userRepository.createUser(userCreateDto)
