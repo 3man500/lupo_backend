@@ -34,6 +34,7 @@ export class AwsService {
       )}`.replace(/ /g, '');
       // 공백을 제거해주는 정규식
 
+      console.log(this.S3_BUCKET_NAME)
       const s3Object = await this.awsS3
         .putObject({
           Bucket: this.S3_BUCKET_NAME,
