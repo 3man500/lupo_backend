@@ -12,6 +12,8 @@ import { NotFoundError } from 'rxjs';
 import { LocationService } from './location/location.service';
 import { LIMITED_DISTANCE } from '../../utils/constants';
 import { UserDto } from './dto/userDto';
+import { UploadedImageService } from '../image/uploadedImage.service';
+import { UploadedImageRepository } from '../image/uploadedImage.repository';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +21,8 @@ export class AuthService {
         @InjectRepository(UserRepository) 
         private readonly userRepository: UserRepository,
         private readonly jwtService: JwtService,
-        private readonly locationService: LocationService
+        private readonly locationService: LocationService,
+        private readonly uploadedImageRepository: UploadedImageRepository
         ){}
 
         async getUsersAdjacency(userId: number){
@@ -90,11 +93,18 @@ export class AuthService {
             console.log(id, username)
             
             const user = await this.userRepository.findOne({id})
+            const imageUrl = await this.uploadedImageRepository.findOne({user_id: user.id})
             if(user.username === username){
                 res.json({ isLogined : true,
                             userId : user.id,
                             username : user.username,
-                            access_token : token
+                            nickname: user.nickname,
+                            age: user.age,
+                            gender: user.gender,
+                            lat: user.lat,
+                            lon: user.lon,
+                            access_token : token,
+                            image_url: imageUrl.image
                         })
             }else{
                 res.json({ isLogined : false})
