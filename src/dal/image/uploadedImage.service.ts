@@ -10,7 +10,10 @@ export class UploadedImageService{
         ){}
     async uploadProfileImage(image: string, file_name: string, ip: string, order: number, user_id: number){
 
-        this.uploadedImageRepository.create({image, file_name, ip, order, user_id})
+        console.log(image)
+        const uploadedImage = this.uploadedImageRepository.create({image, file_name, ip, order, user_id})
+        console.log('good', uploadedImage)
+        this.uploadedImageRepository.save(uploadedImage)
         
     }
 }3
