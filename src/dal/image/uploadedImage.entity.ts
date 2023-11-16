@@ -8,15 +8,15 @@ export class UploadedImage extends BaseEntity{
     image: string
 
     @Column({nullable: true})
-    file_name: number
+    file_name: string
 
     @Column({nullable: true})
     ip: string
 
     @Column({nullable: true})
-    order: string
+    order: number
 
-    @DeleteDateColumn({type: "timestamp"})
+    @DeleteDateColumn({type: "timestamp", nullable: true})
     deleted_at: string
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
