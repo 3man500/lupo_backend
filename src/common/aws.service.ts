@@ -74,4 +74,24 @@ export class AwsService {
   public getAwsS3FileUrl(objectKey: string) {
     return `https://${this.S3_BUCKET_NAME}.s3.amazonaws.com/${objectKey}`;
   }
+
+  async getPresignedUrl(objectKey: string){
+    const objectParams_preSign = {
+        Bucket: this.S3_BUCKET_NAME,
+        Key: objectKey,
+        Expires: 60*60, // 60초 동안만 url 유지
+     };
+     const result = await this.awsS3
+        .getSignedUrlPromise('getObject', objectParams_preSign)
+        .then((data) => {
+           console.log('Presigned URL : ', data);
+           return data
+        })
+        .catch((error) => {
+           console.error(error);
+           throw new BadRequestException("s3 image download error", error)
+        });
+
+        return result
+  }
 }

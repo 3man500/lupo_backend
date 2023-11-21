@@ -14,6 +14,7 @@ import { LIMITED_DISTANCE } from '../../utils/constants';
 import { UserDto } from './dto/userDto';
 import { UploadedImageService } from '../image/uploadedImage.service';
 import { UploadedImageRepository } from '../image/uploadedImage.repository';
+import { AwsService } from '../../common/aws.service';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,8 @@ export class AuthService {
         private readonly userRepository: UserRepository,
         private readonly jwtService: JwtService,
         private readonly locationService: LocationService,
-        private readonly uploadedImageRepository: UploadedImageRepository
+        private readonly uploadedImageRepository: UploadedImageRepository,
+        private readonly awsService: AwsService
         ){}
 
         async getUsersAdjacency(userId: number){
@@ -94,6 +96,9 @@ export class AuthService {
             
             const user = await this.userRepository.findOne({id})
             const imageUrl = await this.uploadedImageRepository.findOne({user_id: user.id})
+            const presignedImageUrl = await this.awsService.getPresignedUrl(imageUrl.file_name)
+            console.log('goodd', imageUrl)
+            console.log('good', presignedImageUrl)
             if(user.username === username){
                 res.json({ isLogined : true,
                             userId : user.id,
@@ -104,7 +109,7 @@ export class AuthService {
                             lat: user.lat,
                             lon: user.lon,
                             access_token : token,
-                            image_url: imageUrl.image
+                            image_url: presignedImageUrl
                         })
             }else{
                 res.json({ isLogined : false})

@@ -25,7 +25,7 @@ export class UploadedImageController{
         //console.log("cookie", req.cookies.access_token)
         const authUser = await this.authService.decodeJwt(req)
 
-        this.uploadedImageService.uploadProfileImage(file.originalname, uploadRes.url, '0', 0, authUser.userId)
+        this.uploadedImageService.uploadProfileImage(file.originalname, uploadRes.key, '0', 0, authUser.userId)
 
     }
 
