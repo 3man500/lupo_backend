@@ -9,12 +9,13 @@ import { JwtStrategy } from './jwt.strategy';
 import * as config from 'config'
 import { LocationService } from './location/location.service';
 import { AwsService } from '../../common/aws.service';
+import { UploadedImageRepository } from '../image/uploadedImage.repository';
 
 const jwtConfig = config.get('jwt')
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserRepository]),
+    TypeOrmModule.forFeature([UserRepository, UploadedImageRepository]),
     PassportModule.register({ defaultStrategy: 'jwt'}),
     JwtModule.register({
       secret: process.env.JWT_SECRET || jwtConfig.secret,
