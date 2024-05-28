@@ -12,7 +12,5 @@ jwt:
   expiresIn: 21600
 
 aws:
-  s3AccessKey: 'AKIA2HFWRLLMSH42UJUH'
-  s3SecretKey: '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'
   s3Region: 'ap-northeast-2'
   s3Bucket: 'lupo-image'
