@@ -1,3 +1,7 @@
+config/default.yml
+config/development.yml
+config/production.yml
+
 # compiled output
 /dist
 /node_modules
